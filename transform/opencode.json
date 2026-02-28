@@ -1,0 +1,222 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["AGENTS.md"],
+  "watcher": {
+    "ignore": [
+      "**/node_modules/**",
+      "**/vendor/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.git/**",
+      "**/test/**",
+      "**/tests/**",
+      "**/__pycache__/**"
+    ]
+  },
+  "default_agent": "code-audit",
+  "agent": {
+    "code-audit": {
+      "description": "Professional code security audit orchestrator covering 55+ vulnerability types across 9 languages. Dispatches specialized audit subagents based on attack surface analysis.",
+      "mode": "primary",
+      "temperature": 0.2,
+      "prompt": "{file:.opencode/agents/code-audit.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "bash": {
+          "*": "ask",
+          "git *": "allow",
+          "semgrep *": "allow",
+          "bandit *": "allow",
+          "gosec *": "allow",
+          "gitleaks *": "allow",
+          "npm audit*": "allow",
+          "pip-audit*": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        }
+      }
+    },
+    "audit-recon": {
+      "description": "Phase 1 reconnaissance agent: tech stack identification, attack surface mapping, module enumeration, authentication chain analysis, and fast exclusion.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-recon.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "bash": {
+          "*": "ask",
+          "git *": "allow"
+        },
+        "skill": {
+          "*": "allow"
+        }
+      }
+    },
+    "audit-d1-injection": {
+      "description": "D1 injection audit agent (sink-driven): SQL/HQL/NoSQL, command injection, SSTI, JNDI, SpEL injection with deep sink chain tracing.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-d1-injection.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-d2d3d9-control": {
+      "description": "D2+D3+D9 control-driven audit agent: authentication chain verification, authorization/IDOR/CRUD consistency, business logic flaws, Mass Assignment, race conditions.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-d2d3d9-control.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-d4-rce": {
+      "description": "D4 RCE/deserialization audit agent (sink-driven): Java/Python/PHP deserialization, gadget chains, script engines, expression injection with sink chain tracing.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-d4-rce.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-d5d6-file-ssrf": {
+      "description": "D5+D6 file operations and SSRF audit agent (sink-driven): file upload/download, path traversal, Zip Slip, SSRF, JDBC URL injection with sink chain tracing.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-d5d6-file-ssrf.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-d7d8d10-config": {
+      "description": "D7+D8+D10 config-driven audit agent: cryptography weaknesses, configuration exposure (Actuator/debug), supply chain CVEs, hardcoded secrets.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-d7d8d10-config.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "task": {
+          "audit-*": "allow",
+          "*": "deny"
+        },
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-evaluation": {
+      "description": "Round evaluation agent: coverage gap assessment, three-question rule, sink fan-out check, cross-round transfer structure generation, adaptive round decisions.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-evaluation.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "skill": true
+      },
+      "permission": {
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-report": {
+      "description": "Report generation agent: severity calibration, attack chain construction, cross-agent deduplication, structured report output with graded sink chain code.",
+      "mode": "subagent",
+      "temperature": 0.2,
+      "prompt": "{file:.opencode/agents/audit-report.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": false,
+        "skill": true
+      },
+      "permission": {
+        "skill": { "*": "allow" }
+      }
+    },
+    "audit-quick-diff": {
+      "description": "Quick-Diff incremental audit agent: git diff analysis, change classification, incremental attack surface assessment for PR review and CI/CD pipelines.",
+      "mode": "subagent",
+      "temperature": 0.1,
+      "prompt": "{file:.opencode/agents/audit-quick-diff.md}",
+      "tools": {
+        "write": false,
+        "edit": false,
+        "bash": true,
+        "skill": true
+      },
+      "permission": {
+        "bash": {
+          "*": "ask",
+          "git *": "allow"
+        },
+        "skill": { "*": "allow" }
+      }
+    }
+  },
+  "permission": {
+    "edit": "deny",
+    "bash": "ask",
+    "skill": {
+      "*": "allow"
+    }
+  }
+}
