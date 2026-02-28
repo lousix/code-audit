@@ -204,37 +204,6 @@ IoT/嵌入式: D7(++), D2(++), D5(+), D10(+)
 
 ---
 
-## Step 3: 快速排除 (Fast Exclusion)
-
-> 对高危但低概率的攻击面执行批量Grep，0 hits则标记该方向为SKIP，不分配Agent。
-
-**排除原则**: 按已识别的技术栈选择对应语言的排除模式。
-
-**Java 项目排除**:
-
-| Grep 模式 | 攻击面 | 0 hits → SKIP |
-|-----------|--------|--------------|
-| `ObjectInputStream\|XMLDecoder` | 反序列化 | 反序列化Agent方向 |
-| `InitialContext\|\.lookup\(` | JNDI注入 | JNDI检查项 |
-| `ScriptEngine\|GroovyShell\|Nashorn` | 脚本引擎RCE | 脚本引擎检查项 |
-| `DocumentBuilder\|SAXParser\|XMLReader` | XXE | XXE检查项 |
-| `fastjson\|JSON\.parse` (pom.xml + *.java) | Fastjson | Fastjson检查项 |
-
-**Python 项目排除**:
-
-| Grep 模式 | 攻击面 | 0 hits → SKIP |
-|-----------|--------|--------------|
-| `pickle\|yaml\.load\|marshal` | 反序列化 | 反序列化方向 |
-| `eval\|exec\|compile\|__import__` | 代码执行 | 动态执行方向 |
-| `render_template_string\|Template\(` | SSTI | 模板注入方向 |
-| `subprocess\|os\.system\|os\.popen` | 命令注入 | 命令注入方向 |
-
-**Go/PHP/Node.js 项目**: LLM 根据 `references/checklists/{language}.md` D1 段的关键问题，自行构造对应排除模式。
-
-SKIP不意味着"安全"，而是"该攻击面在此项目中不存在"。
-
----
-
 ## 技术栈识别
 
 **识别方法**: 构建配置文件 → 语言确认 → 框架识别 → 版本提取
