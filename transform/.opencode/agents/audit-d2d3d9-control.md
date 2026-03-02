@@ -36,7 +36,8 @@ permission:
 1. 尝试: skill({ name: "anti-hallucination" }) / 若失败: Read(".opencode/skills/anti-hallucination/SKILL.md")
 2. Read("references/core/phase2_deep_methodology.md") — 必须加载，非按需
 3. references/ 文件: 始终使用 Read("references/...")
-
+4. 1-2的Skill必须加载
+5. 必须尝试思考并按需加载：依据技术栈和注入类漏洞类型读取references中对应的内容，包括语言、框架、漏洞相关的文档
 ---
 
 ## 关键区别

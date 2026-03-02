@@ -704,13 +704,13 @@ State: ROUND_N_EVALUATION（轮次终止评估）
   │                                                              │
   │      【Sink-driven 维度: D1/D4/D5/D6】                        │
   │      ✅已覆盖 = 核心 Sink 类别均被搜索 + 有数据流追踪          │
-  │                + Sink 扇出率 ≥ 30%（见下方扇出检查）           │
+  │                + Sink 扇出率 ≥ 45%（见下方扇出检查）           │
   │      ⚠️浅覆盖 = 搜索过但: Sink 类别有遗漏 / 仅 Grep 未追踪   │
-  │                 / 只搜核心模块 / 扇出率 < 30%                  │
+  │                 / 只搜核心模块 / 扇出率 < 45%                  │
   │      ❌未覆盖 = 该维度未被任何 Agent 搜索                      │
   │                                                              │
   │      【Control-driven 维度: D3/D9】                            │
-  │      ✅已覆盖 = 端点审计率 ≥ 50%(deep) / ≥ 30%(standard)      │
+  │      ✅已覆盖 = 端点审计率 ≥ 50%(deep)                         │
   │                + 至少 3 种资源类型执行了 CRUD 权限一致性对比    │
   │                + IDOR 检查覆盖了主要 findById/getById 调用     │
   │      ⚠️浅覆盖 = 仅 Grep 搜索 pattern 但未系统枚举端点验证     │
@@ -729,7 +729,7 @@ State: ROUND_N_EVALUATION（轮次终止评估）
   │        数据来源: Agent HEADER 中的 STATS.files_read 和         │
   │                  STATS.grep_patterns 对应的命中文件数           │
   │        判定: 某维度 Grep 命中 ≥10 个文件但仅追踪 ≤2 个         │
-  │              → 扇出率 ≤ 20% → 降级为 ⚠️（需 R2 深入）        │
+  │              → 扇出率 ≤ 30% → 降级为 ⚠️（需 R2 深入）        │
   │        意义: Grep 命中多说明攻击面广，只追踪少数说明深度不够    │
   │                                                              │
   │      判定来源: Agent 输出中的 UNCHECKED_CANDIDATES 列表         │
@@ -781,7 +781,7 @@ State: ROUND_N_EVALUATION（轮次终止评估）
   │       □ 三问法则全部回答 NO                                    │
   │       □ 所有 Agent 的 UNCHECKED_CANDIDATES 为空                │
   │       □ 所有 Agent 的 UNFINISHED 为空                          │
-  │       □ 所有维度 Sink 扇出率 ≥ 30%                             │
+  │       □ 所有维度 Sink 扇出率 ≥ 45%                             │
   │     5 条全部打 ✅ → 可直接 REPORT。任一未满足 → NEXT_ROUND。  │
   │     ★ 禁止引用 Plan 文件中的跳过规则覆盖以上条件。            │
   │                                                              │

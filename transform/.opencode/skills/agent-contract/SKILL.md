@@ -99,14 +99,14 @@ HOTSPOTS: {file:line:断点描述} | ...
 
 ```
 ---Agent Contract---
-1. 搜索路径: {paths}。排除: {excludes}。
+1. 搜索路径（搜索前先使用Grep工具确认文件完整路径，再使用Read工具读取）: {paths}。排除: {excludes}。
 2. 必须使用 Grep/Glob/Read 工具。禁止 Bash 中 grep/find/cat。
-3. 工具调用 ≤50 次，Bash ≤10 次。max_turns: {N}。
+3. 工具调用 ≤70 次，Bash ≤20 次。max_turns: {N}。
    ★ Turn 预留: turns_used ≥ max_turns-3 时立即停止探索，产出结构化输出。
 4. Bash timeout: 30000。Grep 超时→缩小 path→失败 2 次→跳过。
 5. 搜索策略: Grep 定位行号 → Read offset/limit 读上下文。禁止整文件读取。
-6. 输出: 按 Agent 输出模板返回。禁止大段代码（>3行）。
-7. 节约: 同类漏洞 ≥5 合并。同 pattern 多文件列清单。
+6. 输出: 按 Agent 输出模板返回。禁止大段代码（>10行）。
+7. 节约: 同类漏洞 ≥5 合并，只详细描述其中一个漏洞的细节。同 pattern 多文件列清单。
 8. 同维度多入口:
    a. Sink 类别枚举: ≥1 入口后一次性枚举剩余类别。
    b. 类别上界: 每维度最多 8 个。

@@ -18,9 +18,6 @@ permission:
   edit: deny
   webfetch: ask
   bash: allow
-  bash:
-    "*": ask
-    "git *": allow
   skill:
     "*": allow
 ---
@@ -31,11 +28,13 @@ permission:
 
 ## Skill 加载规则（双通道）
 
+0. 对于调用的skill中提到的参考文档必须读取
 1. 尝试: skill({ name: "tech-stack-router" })
 2. 若失败: Read(".opencode/skills/tech-stack-router/SKILL.md")
 3. 尝试: skill({ name: "anti-hallucination" })
 4. 若失败: Read(".opencode/skills/anti-hallucination/SKILL.md")
 5. references/ 文件: 始终使用 Read("references/...")
+
 
 ---
 
@@ -187,7 +186,7 @@ T5 功能发现: Grep 快速探测 + 结构推理 → 激活 D1-D10 维度
 金融/支付类: D9(++), D1(++), D2(+), D3(+)
   → Agent 分配偏重业务逻辑(竞态/金额)+注入+认证授权
 数据平台/BI: D1(++), D6(++), D3(+), D7(+)
-  → Agent 分配偏重 SQL 引擎注入+SSRF/数据源+权限隔离
+  → Agent 分配偏重 SQL 引擎注入+SSRF/数据源+权限隔离+JDNI注入
 文件存储/CMS: D5(++), D1(+), D3(+), D6(+), D9(+)
   → Agent 分配偏重文件操作+路径遍历+SSRF+后台越权
 身份认证平台: D2(++), D3(++), D7(+), D9(+)

@@ -35,7 +35,8 @@ permission:
 1. 尝试: skill({ name: "anti-hallucination" }) / 若失败: Read(".opencode/skills/anti-hallucination/SKILL.md")
 2. references/ 文件: 始终使用 Read("references/...")
 3. 按需加载: Read("references/security/cryptography.md"), Read("references/security/dependencies.md")
-
+5. 1的Skill必须加载
+6. 必须尝试思考并按需加载：依据技术栈和注入类漏洞类型读取references中对应的内容，包括语言、框架、漏洞相关的文档
 ---
 
 ## D7 加密安全审计

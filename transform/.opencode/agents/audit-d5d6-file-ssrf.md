@@ -36,6 +36,8 @@ permission:
 2. 尝试: skill({ name: "sink-chain-methodology" }) / 若失败: Read(".opencode/skills/sink-chain-methodology/SKILL.md")
 3. references/ 文件: 始终使用 Read("references/...")
 4. 按需加载: Read("references/security/file_operations.md"), Read("references/security/api_security.md")
+5. 1-2的Skill必须加载
+6. 必须尝试思考并按需加载：依据技术栈和注入类漏洞类型读取references中对应的内容，包括语言、框架、漏洞相关的文档
 
 ---
 

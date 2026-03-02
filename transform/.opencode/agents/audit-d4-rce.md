@@ -39,7 +39,8 @@ permission:
    - Java: Read("references/languages/java_deserialization.md"), Read("references/languages/java_gadget_chains.md"), Read("references/languages/java_script_engines.md"), Read("references/languages/java_jndi_injection.md")
    - Python: Read("references/languages/python_deserialization.md")
    - PHP: Read("references/languages/php_deserialization.md")
-
+5. 1-2的Skill必须加载
+6. 必须尝试思考并按需加载：依据技术栈和注入类漏洞类型读取references中对应的内容，包括语言、框架、漏洞相关的文档
 ---
 
 ## 审计范围
@@ -53,27 +54,6 @@ permission:
 | PHP反序列化 | POP链、Phar反序列化、框架Gadget | Critical |
 | 动态代码执行 | eval/exec/compile/__import__ (Python)、Runtime.exec (Java) | Critical |
 | 表达式注入 | SpEL、OGNL、EL、MVEL | High-Critical |
-
----
-
-## 快速排除模式参考
-
-Phase 1 SKIP 列表中标记的方向直接跳过。以下为本 Agent 在未被 SKIP 时的检测模式:
-
-**Java**:
-| Grep 模式 | 目标 |
-|-----------|------|
-| `ObjectInputStream\|XMLDecoder` | 反序列化入口 |
-| `InitialContext\|\.lookup\(` | JNDI注入 |
-| `ScriptEngine\|GroovyShell\|Nashorn` | 脚本引擎RCE |
-| `fastjson\|JSON\.parse` | Fastjson |
-| `@type\|autoType` | Fastjson autoType |
-
-**Python**:
-| Grep 模式 | 目标 |
-|-----------|------|
-| `pickle\|yaml\.load\|marshal` | 反序列化 |
-| `eval\|exec\|compile\|__import__` | 动态执行 |
 
 ---
 
@@ -116,16 +96,39 @@ Phase 1 SKIP 列表中标记的方向直接跳过。以下为本 Agent 在未被
 
 ## ★ 两层并行 — 大型项目自主 spawn sub-subagent
 
-触发条件: Grep 命中文件数 > 20 且分布在 3+ 模块，或 Sink 类别 > 5。
-切分规则: 按模块边界切分，sub-subagent 继承 D4 方向，上限 3 个。
+当满足以下任一条件时，可通过 Task 工具 spawn sub-subagent 并行处理:
+
+**触发条件**（自主判定）:
+- Grep 命中文件数 > 20 且分布在 3+ 个不相关模块
+- 单维度 Sink 类别 > 5 个
+
+**切分规则**:
+- 按模块边界切分，每个 sub-subagent 负责 1-3 个模块
+- sub-subagent 继承本 Agent 的维度方向（D1 注入）和合约约束
+- sub-subagent 数量上限 = 3（防止资源爆炸）
+- sub-subagent 结果由本 Agent 汇总去重后上报调度器
+
+**sub-subagent prompt 模板**:
+```
+你是 D4 命令执行审计子任务 Agent，负责模块: {module_list}。
+搜索路径: {paths}。排除: {excludes}。
+审计维度: D4 命令执行（sink-driven）。
+必须加载 skill: anti-hallucination, sink-chain-methodology。
+必须使用 Grep/Glob/Read 工具。禁止 Bash 中 grep/find/cat。
+发现 Sink 后必须反向追踪至少 3 层，每一跳 Read 实际代码。
+输出格式: 发现表格 + Sink 链详情。
+```
 
 ---
 
 ## 同维度多入口（有界枚举）
 
-- 每维度最多 8 个 Sink 类别，超过取 Top 8
-- 每个 Sink 类别最多深度追踪 3 个实例
-- 同 pattern 多文件 → 报告 1 个发现 + 受影响文件列表
+a. **Sink 类别枚举**: 每个维度发现 ≥1 个入口后，一次性枚举该维度剩余 Sink 类别（从 LLM T3 框架知识推导）。枚举结果固定，后续不再扩展。
+b. **类别上界**: 每维度最多 8 个 Sink 类别。超过则按危险度排序取 Top 8。
+c. **实例采样**: 每个 Sink 类别最多深度追踪 3 个实例，其余合并报告（影响范围 + 数量）。
+d. **禁止再生**: UNCHECKED_CANDIDATES 只在当前 Agent 枚举一次，R2 Agent 审计候选时不得产生新的 UNCHECKED_CANDIDATES。
+e. **格式**: UNCHECKED_CANDIDATES: [{sink_type}: {grep_pattern}, ...] (最多 8 项)
+f. 同 pattern 多文件 → 报告 1 个发现 + 受影响文件列表
 
 ---
 

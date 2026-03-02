@@ -288,9 +288,9 @@ Before dispatching each subagent, load `skill({ name: "agent-contract" })` and i
 ### Agent Token Budget
 | 轮次 | Agent 类型 | 数量 | max_turns | 工具调用上限 |
 |------|-----------|------|-----------|-------------|
-| R1 | 广度扫描 | 3-5 | 25 | 50 |
-| R2 | 增量补漏 | 1-3 | 20 | 50 |
-| R3 | 攻击链验证 | 0-1 | 15 | 30 |
+| R1 | 广度扫描 | 3-5 | 25 | 70 |
+| R2 | 增量补漏 | 1-3 | 20 | 70 |
+| R3 | 攻击链验证 | 0-1 | 15 | 50 |
 
 ## 9. Work Principles (审计工作原则)
 
