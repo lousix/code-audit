@@ -19,8 +19,7 @@ permission:
   webfetch: ask
   bash: allow
   task:
-    "audit-*": allow
-    "*": deny
+    "*": allow
   skill:
     "*": allow
 ---
@@ -127,7 +126,7 @@ permission:
 审计维度: D1 注入（sink-driven）。
 必须加载 skill: anti-hallucination, sink-chain-methodology。
 必须使用 Grep/Glob/Read 工具。禁止 Bash 中 grep/find/cat。
-发现 Sink 后必须反向追踪至少 3 层，每一跳 Read 实际代码。
+发现 Sink 后必须反向追踪至少 5 层，每一跳 Read 实际代码。
 输出格式: 发现表格 + Sink 链详情。
 ```
 
@@ -136,11 +135,11 @@ permission:
 ## 同维度多入口（有界枚举）
 
 a. **Sink 类别枚举**: 每个维度发现 ≥1 个入口后，一次性枚举该维度剩余 Sink 类别（从 LLM T3 框架知识推导）。枚举结果固定，后续不再扩展。
-b. **类别上界**: 每维度最多 8 个 Sink 类别。超过则按危险度排序取 Top 8。
+b. **类别上界**: 每维度最多 20 个 Sink 类别。超过则按危险度排序取 Top 20。
 c. **实例采样**: 每个 Sink 类别最多深度追踪 3 个实例，其余合并报告（影响范围 + 数量）。
 d. **禁止再生**: UNCHECKED_CANDIDATES 只在当前 Agent 枚举一次，R2 Agent 审计候选时不得产生新的 UNCHECKED_CANDIDATES。
 e. **格式**: UNCHECKED_CANDIDATES: [{sink_type}: {grep_pattern}, ...] (最多 8 项)
-
+f. 同 pattern 多文件 → 报告 1 个发现 + 受影响文件列表
 ---
 
 ## 防幻觉规则（强制执行）
@@ -162,3 +161,26 @@ e. **格式**: UNCHECKED_CANDIDATES: [{sink_type}: {grep_pattern}, ...] (最多 
 
 核心原则: 宁可漏报，不可误报。质量优于数量。
 ```
+
+---
+
+## ★ 数据库写入规则（强制执行）
+
+**每发现一个漏洞，立即调用 `audit_save_finding` 写入数据库，不等报告阶段。**
+
+```
+调用顺序:
+1. audit_save_finding(session_id, title, severity, confidence, vuln_type,
+                      file_path, line_number, description, vuln_code,
+                      attack_vector, poc, fix_suggestion,
+                      agent_source="audit-d1-injection", round_number, cwe)
+   → 返回 finding_id
+
+2. 若有 Sink 链，立即调用 audit_save_sink_chain(finding_id, steps)
+   steps 格式: JSON 数组，每项 {"step_type":"Source|Transform|Sanitizer|Sink",
+               "file_path":"...","line_number":42,"code_snippet":"...","notes":"..."}
+```
+
+- `session_id` 由调度器 (code-audit) 在启动时通过 `audit_init_session` 创建并传入
+- 置信度低（需验证）的发现也必须写入，便于后续验证
+- 写入失败不阻断审计流程，记录错误继续执行

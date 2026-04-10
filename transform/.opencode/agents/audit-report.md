@@ -25,6 +25,7 @@ permission:
 # Audit Report Generation Agent
 
 > 报告生成 — 严重度校准、攻击链构建、跨Agent去重、结构化报告输出
+> 报告输出规则：在对话框显示，报告不可省略漏洞sink等详细信息的描述，报告长度不超过15000字，可精简其余部分的内容描述
 
 ## Skill 加载规则（双通道）
 
@@ -216,3 +217,38 @@ Low/Info: 允许 [需验证]
 ```
 
 最终报告 = 所有轮次合并结果（不是某一轮的结果）
+
+---
+
+## ★ 数据库驱动报告生成（替代对话框输出）
+
+> 报告内容已在各 Agent 审计过程中实时写入数据库，此阶段负责攻击链构建、去重校准、生成文件。
+
+### 执行步骤
+
+1. **构建攻击链** — 对每条候选链调用:
+   ```
+   audit_save_attack_chain(session_id, chain_title, combined_severity,
+                           description, finding_ids, link_descs)
+   ```
+
+2. **标记完成** — 调用:
+   ```
+   audit_complete_session(session_id)
+   ```
+
+3. **生成报告文件** — 调用:
+   ```
+   audit_generate_report(session_id, output_dir?)
+   ```
+   返回 `{ markdown: "...", html: "...", findings: N, critical: N, high: N }`
+
+4. **在对话框输出摘要**（仅摘要，不重复完整报告）:
+   ```
+   ✅ 报告已生成
+   - Markdown: {markdown_path}
+   - HTML:     {html_path}
+   - 漏洞总数: {findings} (Critical: {critical}, High: {high})
+   ```
+
+> 若 `audit_generate_report` 调用失败，回退到对话框输出完整报告（原有行为）。

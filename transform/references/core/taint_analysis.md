@@ -7,7 +7,7 @@
 | 漏洞类型 | 详细规则文件 | Sink 示例 |
 |----------|--------------|-----------|
 | 反序列化 Gadget | `languages/java_gadget_chains.md` | readObject, parseObject |
-| JNDI 注入 | `languages/java_jndi_injection.md` | InitialContext.lookup |
+| JNDI 注入 | `languages/java_jndi_injection.md` | InitialContext.lookup, .lookup |
 | XXE | `languages/java_xxe.md` | DocumentBuilder.parse |
 | Fastjson | `languages/java_fastjson.md` | JSON.parseObject |
 | 通用 Sink/Source | `core/sinks_sources.md` | 完整规则库 |

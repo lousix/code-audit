@@ -78,5 +78,6 @@ description: "Five-phase audit model with effort allocation, semantic-driven Pha
 - 单一模块/攻击向量不得消耗 Phase 3 超过 30% 的时间
 - 同类文件 ≥3 个共享相同模式时，合并为 1 个发现 + 对比表
 - 每完成一个模块，强制问: "还有哪些攻击面我没碰过？"
+- 每完成一个入口点分析，强制问："是否还有其他入口？是否深入？"
 - 广度覆盖率 < 60% 时禁止进入深度审计
 ```

@@ -85,6 +85,7 @@ find . -name "setup.py" -o -name "pyproject.toml" | head -50
 | 反序列化 | readObject, fromXML, parse | `grep -rn "readObject\|fromXML\|\.parse(" --include="*.java"` |
 | 配置加载 | @Value, @ConfigurationProperties | `grep -rn "@Value\|@ConfigurationProperties" --include="*.java"` |
 
+
 #### 0.2.1 LSP 增强入口点分析 (v2.4.0)
 
 > 使用 LSP 进行精确的入口点枚举和调用关系分析

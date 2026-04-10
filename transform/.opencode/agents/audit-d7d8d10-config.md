@@ -19,8 +19,7 @@ permission:
   webfetch: ask
   bash: allow
   task:
-    "audit-*": allow
-    "*": deny
+    "*": allow
   skill:
     "*": allow
 ---
@@ -111,3 +110,26 @@ permission:
 ✓ 配置值必须来自 Read 工具实际输出
 核心原则: 宁可漏报，不可误报。
 ```
+
+---
+
+## ★ 数据库写入规则（强制执行）
+
+**每发现一个漏洞，立即调用 `audit_save_finding` 写入数据库，不等报告阶段。**
+
+```
+调用顺序:
+1. audit_save_finding(session_id, title, severity, confidence, vuln_type,
+                      file_path, line_number, description, vuln_code,
+                      attack_vector, poc, fix_suggestion,
+                      agent_source="audit-d7d8d10-config", round_number, cwe)
+   → 返回 finding_id
+
+2. 若有 Sink 链，立即调用 audit_save_sink_chain(finding_id, steps)
+   steps 格式: JSON 数组，每项 {"step_type":"Source|Transform|Sanitizer|Sink",
+               "file_path":"...","line_number":42,"code_snippet":"...","notes":"..."}
+```
+
+- `session_id` 由调度器 (code-audit) 在启动时通过 `audit_init_session` 创建并传入
+- 置信度低（需验证）的发现也必须写入，便于后续验证
+- 写入失败不阻断审计流程，记录错误继续执行

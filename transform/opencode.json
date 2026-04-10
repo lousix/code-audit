@@ -41,9 +41,9 @@
           "npm audit*": "allow",
           "pip-audit*": "allow"
         },
-        "skill": {
-          "*": "allow"
-        }
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_list_sessions": "allow"
       }
     },
     "audit-recon": {
@@ -79,11 +79,11 @@
         "skill": true
       },
       "permission": {
-        "task": {
-          "audit-*": "allow",
-          "*": "deny"
-        },
-        "skill": { "*": "allow" }
+        "task": { "audit-*": "allow", "*": "deny" },
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_save_finding": "allow",
+        "audit_save_sink_chain": "allow"
       }
     },
     "audit-d2d3d9-control": {
@@ -98,11 +98,11 @@
         "skill": true
       },
       "permission": {
-        "task": {
-          "audit-*": "allow",
-          "*": "deny"
-        },
-        "skill": { "*": "allow" }
+        "task": { "audit-*": "allow", "*": "deny" },
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_save_finding": "allow",
+        "audit_save_sink_chain": "allow"
       }
     },
     "audit-d4-rce": {
@@ -117,11 +117,11 @@
         "skill": true
       },
       "permission": {
-        "task": {
-          "audit-*": "allow",
-          "*": "deny"
-        },
-        "skill": { "*": "allow" }
+        "task": { "audit-*": "allow", "*": "deny" },
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_save_finding": "allow",
+        "audit_save_sink_chain": "allow"
       }
     },
     "audit-d5d6-file-ssrf": {
@@ -136,11 +136,11 @@
         "skill": true
       },
       "permission": {
-        "task": {
-          "audit-*": "allow",
-          "*": "deny"
-        },
-        "skill": { "*": "allow" }
+        "task": { "audit-*": "allow", "*": "deny" },
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_save_finding": "allow",
+        "audit_save_sink_chain": "allow"
       }
     },
     "audit-d7d8d10-config": {
@@ -155,11 +155,11 @@
         "skill": true
       },
       "permission": {
-        "task": {
-          "audit-*": "allow",
-          "*": "deny"
-        },
-        "skill": { "*": "allow" }
+        "task": { "audit-*": "allow", "*": "deny" },
+        "skill": { "*": "allow" },
+        "audit_init_session": "allow",
+        "audit_save_finding": "allow",
+        "audit_save_sink_chain": "allow"
       }
     },
     "audit-evaluation": {
@@ -189,7 +189,11 @@
         "skill": true
       },
       "permission": {
-        "skill": { "*": "allow" }
+        "skill": { "*": "allow" },
+        "audit_list_sessions": "allow",
+        "audit_save_attack_chain": "allow",
+        "audit_complete_session": "allow",
+        "audit_generate_report": "allow"
       }
     },
     "audit-quick-diff": {
